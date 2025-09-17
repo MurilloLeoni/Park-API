@@ -1,6 +1,7 @@
 package com.mleoni.demo_park_api.controller;
 
 import com.mleoni.demo_park_api.controller.dto.UserCreateDTO;
+import com.mleoni.demo_park_api.controller.dto.UserPasswordDTO;
 import com.mleoni.demo_park_api.controller.dto.UserResponseDTO;
 import com.mleoni.demo_park_api.controller.dto.mapper.UserMapper;
 import com.mleoni.demo_park_api.entities.User;
@@ -26,21 +27,21 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getById(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> getById(@PathVariable Long id) {
         User user = userService.searchById(id);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(UserMapper.toDto(user));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updatePassword(@PathVariable Long id, @RequestBody User user) {
-        user = userService.editPassword(id, user.getPassword());
-        return ResponseEntity.ok(user);
+    public ResponseEntity<String> updatePassword(@PathVariable Long id, @RequestBody UserPasswordDTO userDto) {
+        User user = userService.editPassword(id, userDto.getCurrentPassword(), userDto.getNewPassword(), userDto.getConfirmPassword());
+        return ResponseEntity.ok("Senha alterada com sucesso!");
     }
 
     @GetMapping()
-    public ResponseEntity<List<User>> getAll() {
+    public ResponseEntity<List<UserResponseDTO>> getAll() {
         List<User> users = userService.searchAll();
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(UserMapper.toListDto(users));
     }
 
     @DeleteMapping("/{id}")

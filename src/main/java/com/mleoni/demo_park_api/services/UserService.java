@@ -4,7 +4,6 @@ package com.mleoni.demo_park_api.services;
 import com.mleoni.demo_park_api.entities.User;
 import com.mleoni.demo_park_api.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,9 +29,16 @@ public class UserService {
     }
 
     @Transactional
-    public User editPassword(Long id, String password) {
+    public User editPassword(Long id, String currentPassword, String newPassword, String confirmPassword) {
+        if (!newPassword.equals(confirmPassword)) {
+            throw new RuntimeException("Nova senha não confere com confirmação de senha.");
+        }
+
         User user = searchById(id);
-        user.setPassword(password);
+        if (!user.getPassword().equals(currentPassword)) {
+            throw new RuntimeException("Sua senha não confere.");
+        }
+        user.setPassword(newPassword);
         return user;
     }
 
@@ -49,5 +55,4 @@ public class UserService {
             throw new RuntimeException("ERROR!");
         }
     }
-
 }
