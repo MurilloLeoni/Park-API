@@ -1,5 +1,8 @@
 package com.mleoni.demo_park_api.controller;
 
+import com.mleoni.demo_park_api.controller.dto.UserCreateDTO;
+import com.mleoni.demo_park_api.controller.dto.UserResponseDTO;
+import com.mleoni.demo_park_api.controller.dto.mapper.UserMapper;
 import com.mleoni.demo_park_api.entities.User;
 import com.mleoni.demo_park_api.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +20,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user) {
-        user = userService.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    public ResponseEntity<UserResponseDTO> create(@RequestBody UserCreateDTO createDto) {
+        User user = userService.save(UserMapper.toUser(createDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toDto(user));
     }
 
     @GetMapping("/{id}")
