@@ -1,4 +1,4 @@
-package com.mleoni.demo_park_api.controller.dto;
+package com.mleoni.demo_park_api.web.controller.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -2,6 +2,8 @@ package com.mleoni.demo_park_api.services;
 
 
 import com.mleoni.demo_park_api.entities.User;
+import com.mleoni.demo_park_api.exception.EntityNotFoundException;
+import com.mleoni.demo_park_api.exception.UsernameUniqueViolationException;
 import com.mleoni.demo_park_api.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,14 +20,17 @@ public class UserService {
 
     @Transactional
     public User save(User user) {
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (org.springframework.dao.DataIntegrityViolationException ex) {
+            throw new UsernameUniqueViolationException(String.format("Username {%s} já cadastrado", user.getUsername()));
+        }
     }
 
     @Transactional(readOnly = true)
     public User searchById(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("User not found.")
-        );
+                () -> new EntityNotFoundException(String.format("Usuário id=%s não encontrado.", id)));
     }
 
     @Transactional

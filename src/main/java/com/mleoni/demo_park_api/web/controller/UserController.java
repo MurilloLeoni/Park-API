@@ -1,9 +1,9 @@
-package com.mleoni.demo_park_api.controller;
+package com.mleoni.demo_park_api.web.controller;
 
-import com.mleoni.demo_park_api.controller.dto.UserCreateDTO;
-import com.mleoni.demo_park_api.controller.dto.UserPasswordDTO;
-import com.mleoni.demo_park_api.controller.dto.UserResponseDTO;
-import com.mleoni.demo_park_api.controller.dto.mapper.UserMapper;
+import com.mleoni.demo_park_api.web.controller.dto.UserCreateDTO;
+import com.mleoni.demo_park_api.web.controller.dto.UserPasswordDTO;
+import com.mleoni.demo_park_api.web.controller.dto.UserResponseDTO;
+import com.mleoni.demo_park_api.web.controller.dto.mapper.UserMapper;
 import com.mleoni.demo_park_api.entities.User;
 import com.mleoni.demo_park_api.services.UserService;
 import jakarta.validation.Valid;

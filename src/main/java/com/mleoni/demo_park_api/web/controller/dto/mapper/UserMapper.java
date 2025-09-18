@@ -1,7 +1,7 @@
-package com.mleoni.demo_park_api.controller.dto.mapper;
+package com.mleoni.demo_park_api.web.controller.dto.mapper;
 
-import com.mleoni.demo_park_api.controller.dto.UserCreateDTO;
-import com.mleoni.demo_park_api.controller.dto.UserResponseDTO;
+import com.mleoni.demo_park_api.web.controller.dto.UserCreateDTO;
+import com.mleoni.demo_park_api.web.controller.dto.UserResponseDTO;
 import com.mleoni.demo_park_api.entities.User;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
