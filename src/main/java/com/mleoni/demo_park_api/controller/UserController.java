@@ -6,6 +6,7 @@ import com.mleoni.demo_park_api.controller.dto.UserResponseDTO;
 import com.mleoni.demo_park_api.controller.dto.mapper.UserMapper;
 import com.mleoni.demo_park_api.entities.User;
 import com.mleoni.demo_park_api.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@RequestBody UserCreateDTO createDto) {
+    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserCreateDTO createDto) {
         User user = userService.save(UserMapper.toUser(createDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toDto(user));
     }
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<String> updatePassword(@PathVariable Long id, @RequestBody UserPasswordDTO userDto) {
+    public ResponseEntity<String> updatePassword(@Valid @PathVariable Long id, @RequestBody UserPasswordDTO userDto) {
         User user = userService.editPassword(id, userDto.getCurrentPassword(), userDto.getNewPassword(), userDto.getConfirmPassword());
         return ResponseEntity.ok("Senha alterada com sucesso!");
     }
