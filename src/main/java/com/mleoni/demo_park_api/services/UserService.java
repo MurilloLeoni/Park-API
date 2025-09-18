@@ -3,6 +3,7 @@ package com.mleoni.demo_park_api.services;
 
 import com.mleoni.demo_park_api.entities.User;
 import com.mleoni.demo_park_api.exception.EntityNotFoundException;
+import com.mleoni.demo_park_api.exception.PasswordInvalidException;
 import com.mleoni.demo_park_api.exception.UsernameUniqueViolationException;
 import com.mleoni.demo_park_api.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,12 +37,12 @@ public class UserService {
     @Transactional
     public User editPassword(Long id, String currentPassword, String newPassword, String confirmPassword) {
         if (!newPassword.equals(confirmPassword)) {
-            throw new RuntimeException("Nova senha não confere com confirmação de senha.");
+            throw new PasswordInvalidException("Nova senha não confere com confirmação de senha.");
         }
 
         User user = searchById(id);
         if (!user.getPassword().equals(currentPassword)) {
-            throw new RuntimeException("Sua senha não confere.");
+            throw new PasswordInvalidException("Sua senha não confere.");
         }
         user.setPassword(newPassword);
         return user;
