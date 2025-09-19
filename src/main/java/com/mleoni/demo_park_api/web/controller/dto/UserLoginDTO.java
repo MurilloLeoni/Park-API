@@ -12,7 +12,6 @@ import lombok.*;
 public class UserLoginDTO {
 
     @NotBlank
-    @Size(min = 6, max = 6)
     private String username;
 
     @NotBlank

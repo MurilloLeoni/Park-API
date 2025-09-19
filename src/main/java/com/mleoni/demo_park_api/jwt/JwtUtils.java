@@ -20,7 +20,7 @@ public class JwtUtils {
     public static final String SECRET_KEY = "0123456789-0123456789-0123456789";
     public static final long EXPIRE_DAYS = 0;
     public static final long EXPIRE_HOURS = 0;
-    public static final long EXPIRE_MINUTES = 2;
+    public static final long EXPIRE_MINUTES = 3;
 
 
     private JwtUtils() {
@@ -83,9 +83,9 @@ public class JwtUtils {
     }
 
     private static String refactorToken(String token) {
-        if (token.contains(JWT_BEARER)) {
-            return token.substring(JWT_BEARER.length());
+        if (token.startsWith(JWT_BEARER)) {
+            return token.substring(JWT_BEARER.length()).trim();
         }
-        return token;
+        return token.trim();
     }
 }
