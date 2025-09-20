@@ -4,10 +4,15 @@ import com.mleoni.demo_park_api.entities.Client;
 import com.mleoni.demo_park_api.exception.CpfUniqueViolationException;
 import com.mleoni.demo_park_api.exception.EntityNotFoundException;
 import com.mleoni.demo_park_api.repositories.ClientRepository;
+import com.mleoni.demo_park_api.repositories.projection.ClientProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -31,5 +36,10 @@ public class ClientService {
         return clientRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Clint id=%s not found in the system", id))
         );
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ClientProjection> findAll(Pageable pageable) {
+        return clientRepository.findAllPageable(pageable);
     }
 }

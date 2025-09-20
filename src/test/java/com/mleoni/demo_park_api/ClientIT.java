@@ -1,9 +1,6 @@
 package com.mleoni.demo_park_api;
 
-import com.mleoni.demo_park_api.web.controller.dto.ClientCreateDTO;
-import com.mleoni.demo_park_api.web.controller.dto.ClientResponseDTO;
-import com.mleoni.demo_park_api.web.controller.dto.UserCreateDTO;
-import com.mleoni.demo_park_api.web.controller.dto.UserResponseDTO;
+import com.mleoni.demo_park_api.web.controller.dto.*;
 import com.mleoni.demo_park_api.web.controller.exception.ErrorMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,6 +150,52 @@ public class ClientIT {
         ErrorMessage responseBody = testClient
                 .get()
                 .uri("/api/v1/clients/0")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bia@email.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(403);
+    }
+
+    @Test
+    public void searchCustomersWithPaginationByAdmin_ReturnCustomersWithStatus200() {
+        PageableDTO responseBody = testClient
+                .get()
+                .uri("/api/v1/clients")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDTO.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getContent().size()).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getNumber()).isEqualTo(0);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(1);
+
+        responseBody = testClient
+                .get()
+                .uri("/api/v1/clients?size=1&page=1")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDTO.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getContent().size()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getNumber()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(2);
+    }
+
+    @Test
+    public void searchClientsWithClientPagination_ReturnErrorMessageWithStatus403() {
+        ErrorMessage responseBody = testClient
+                .get()
+                .uri("/api/v1/clients")
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bia@email.com", "123456"))
                 .exchange()
                 .expectStatus().isForbidden()
