@@ -18,10 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Clients", description = "Contains all operations related to a user's resources.")
 @RequiredArgsConstructor
@@ -34,7 +31,7 @@ public class ClientController {
     private final UserService userService;
 
     @Operation(summary = "Create a new client", description = "Resource for creating a new client linked to a registered user." +
-            "The request requires a bearer token. Access restricted to Role='CUSTOMER'",
+            "The request requires a bearer token. Access restricted to Role='CLIENT'",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Resource created successfully.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClientResponseDTO.class))),
@@ -53,5 +50,22 @@ public class ClientController {
         client.setUser(userService.searchById(userDetails.getId()));
         clientService.save(client);
         return ResponseEntity.status(201).body(ClientMapper.toDto(client));
+    }
+
+    @Operation(summary = "Find a client", description = "Resource for find a client by ID." +
+            "The request requires a bearer token. Access restricted to Role='ADMIN'",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Resource located successfully.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClientResponseDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "Client not found.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "403", description = "Feature not allowed for CLIENT profile.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            })
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ClientResponseDTO> getById(@PathVariable Long id) {
+        Client client = clientService.findById(id);
+        return ResponseEntity.ok(ClientMapper.toDto(client));
     }
 }
