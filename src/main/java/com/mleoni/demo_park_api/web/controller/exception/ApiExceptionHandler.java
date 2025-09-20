@@ -3,7 +3,7 @@ package com.mleoni.demo_park_api.web.controller.exception;
 import com.mleoni.demo_park_api.exception.EntityNotFoundException;
 import com.mleoni.demo_park_api.exception.PasswordInvalidException;
 import com.mleoni.demo_park_api.exception.UsernameUniqueViolationException;
-import com.mleoni.demo_park_api.services.CpfUniqueViolationException;
+import com.mleoni.demo_park_api.exception.CpfUniqueViolationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
