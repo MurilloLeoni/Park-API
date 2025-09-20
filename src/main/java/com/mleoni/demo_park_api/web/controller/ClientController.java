@@ -108,8 +108,24 @@ public class ClientController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageableDTO> getAll(@Parameter(hidden = true) @PageableDefault(size = 5, sort = {"name"})
-                                                  Pageable pageable) {
+                                              Pageable pageable) {
         Page<ClientProjection> clients = clientService.findAll(pageable);
         return ResponseEntity.ok(PageableMapper.toDto(clients));
+    }
+
+    @Operation(summary = "Retrieve authenticated client data", description = "Resource for Retrieve authenticated client data." +
+            "The request requires a bearer token. Access restricted to Role='CLIENT'",
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Resource located successfully.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClientResponseDTO.class))),
+                    @ApiResponse(responseCode = "403", description = "Feature not allowed for ADMIN profile.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            })
+    @GetMapping("/details")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<ClientResponseDTO> getDetails(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        Client client = clientService.findByUserId(userDetails.getId());
+        return ResponseEntity.ok(ClientMapper.toDto(client));
     }
 }
