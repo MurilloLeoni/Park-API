@@ -1,0 +1,1 @@
+DELETE FROM tb_parking_spot;
