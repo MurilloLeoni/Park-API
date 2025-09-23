@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.StringJoiner;
 
 @RequiredArgsConstructor
 @Service
@@ -46,5 +47,12 @@ public class ClientService {
     @Transactional(readOnly = true)
     public Client findByUserId(Long id) {
         return clientRepository.findByUserId(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Client findByCpf(String cpf) {
+        return clientRepository.findByCpf(cpf).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Client with CPF '%s' not found.", cpf))
+        );
     }
 }

@@ -9,11 +9,20 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.mleoni.demo_park_api.entities.ParkingSpot.StatusVaga.AVAILABLE;
+
 @RequiredArgsConstructor
 @Service
 public class ParkingSpotService {
 
     private final ParkingSpotRepository spotRepository;
+
+    @Transactional(readOnly = true)
+    public ParkingSpot findBySpots() {
+        return spotRepository.findFirstByStatus(AVAILABLE).orElseThrow(
+                () -> new EntityNotFoundException("No parking spot available found.")
+        );
+    }
 
     @Transactional
     public ParkingSpot save(ParkingSpot spot) {
